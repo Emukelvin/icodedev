@@ -174,6 +174,8 @@ class HomeController extends Controller
 
         \App\Models\Newsletter::create(['email' => $request->email]);
 
+        Notification::route('mail', $request->email)->notify(new \App\Notifications\NewsletterSubscribed($request->email));
+
         return back()->with('success', 'Thank you for subscribing to our newsletter!');
     }
 
