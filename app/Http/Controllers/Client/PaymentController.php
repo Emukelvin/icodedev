@@ -19,7 +19,7 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $payments = auth()->user()->payments()->latest()->paginate(15);
+        $payments = auth()->user()->payments()->with('project')->latest()->paginate(15);
         return view('client.payments.index', compact('payments'));
     }
 
