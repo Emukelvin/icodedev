@@ -49,7 +49,15 @@ class BlogController extends Controller
             ->where('category_id', $post->category_id)
             ->latest('published_at')->take(3)->get();
 
-        return view('pages.blog.show', compact('post', 'related'));
+        $previousPost = BlogPost::published()
+            ->where('published_at', '<', $post->published_at)
+            ->latest('published_at')->first();
+
+        $nextPost = BlogPost::published()
+            ->where('published_at', '>', $post->published_at)
+            ->oldest('published_at')->first();
+
+        return view('pages.blog.show', compact('post', 'related', 'previousPost', 'nextPost'));
     }
 
     public function storeComment(Request $request, BlogPost $post)
