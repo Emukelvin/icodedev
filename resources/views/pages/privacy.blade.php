@@ -78,15 +78,15 @@
                     <li>Request a copy of your data in a portable format</li>
                     <li>Object to data processing in certain circumstances</li>
                 </ul>
-                <p>To exercise these rights, contact us at <a href="mailto:hello@icodedev.com">hello@icodedev.com</a>.</p>
+                <p>To exercise these rights, contact us at <a href="mailto:{{ $siteSettings['contact_email'] ?? config('mail.from.address') }}">{{ $siteSettings['contact_email'] ?? config('mail.from.address') }}</a>.</p>
             </div>
 
             <div class="card-hover p-8 lg:p-10 animate-on-scroll">
                 <h2 class="flex items-center gap-3"><i class="fas fa-envelope text-primary-400"></i> Contact Us</h2>
                 <p>If you have questions about this Privacy Policy, contact us at:</p>
-                <p><strong>Email:</strong> <a href="mailto:hello@icodedev.com">hello@icodedev.com</a><br>
-                <strong>Phone:</strong> +234 703 802 4207<br>
-                <strong>Address:</strong> Lagos, Nigeria</p>
+                <p><strong>Email:</strong> <a href="mailto:{{ $siteSettings['contact_email'] ?? config('mail.from.address') }}">{{ $siteSettings['contact_email'] ?? config('mail.from.address') }}</a><br>
+                @if($siteSettings['contact_phone'] ?? false)<strong>Phone:</strong> {{ $siteSettings['contact_phone'] }}<br>@endif
+                @if($siteSettings['contact_address'] ?? false)<strong>Address:</strong> {{ $siteSettings['contact_address'] }}@endif</p>
             </div>
         </div>
     </div>

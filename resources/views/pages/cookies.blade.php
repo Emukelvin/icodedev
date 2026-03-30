@@ -100,7 +100,7 @@
             <div class="card-hover p-8 lg:p-10 animate-on-scroll">
                 <h2 class="flex items-center gap-3"><i class="fas fa-envelope text-primary-400"></i> Contact</h2>
                 <p>For questions about our cookie practices, contact us at:</p>
-                <p><strong>Email:</strong> <a href="mailto:hello@icodedev.com">hello@icodedev.com</a></p>
+                <p><strong>Email:</strong> <a href="mailto:{{ $siteSettings['contact_email'] ?? config('mail.from.address') }}">{{ $siteSettings['contact_email'] ?? config('mail.from.address') }}</a></p>
             </div>
         </div>
     </div>
