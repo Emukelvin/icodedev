@@ -85,11 +85,9 @@ class BlogController extends Controller
             'parent_id' => $validated['parent_id'] ?? null,
             'guest_name' => auth()->check() ? null : $validated['guest_name'],
             'guest_email' => auth()->check() ? null : $validated['guest_email'],
-            'is_approved' => auth()->check(),
+            'is_approved' => true,
         ]);
 
-        return back()->with('success', auth()->check()
-            ? 'Comment posted successfully!'
-            : 'Comment submitted and awaiting moderation.');
+        return back()->with('success', 'Comment posted successfully!');
     }
 }

@@ -245,6 +245,12 @@
                         @endforelse
 
                         {{-- Comment Form --}}
+                        @if(session('success'))
+                        <div class="mt-8 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium flex items-center gap-3">
+                            <i class="fas fa-check-circle"></i> {{ session('success') }}
+                        </div>
+                        @endif
+
                         <form action="{{ route('blog.comment', $post) }}" method="POST" class="mt-10 card-hover p-8 animate-on-scroll">
                             @csrf
                             <h4 class="text-lg font-black text-white mb-6 flex items-center gap-2">
