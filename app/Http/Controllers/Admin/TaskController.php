@@ -56,8 +56,12 @@ class TaskController extends Controller
 
         $task = Task::create($validated);
 
-        if ($task->assigned_to && $task->assignedUser) {
-            $task->assignedUser->notify(new TaskAssigned($task));
+        try {
+            if ($task->assigned_to && $task->assignedUser) {
+                $task->assignedUser->notify(new TaskAssigned($task));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return redirect()->route('admin.tasks.index')
@@ -90,8 +94,12 @@ class TaskController extends Controller
 
         $task->update($validated);
 
-        if ($validated['assigned_to'] && $validated['assigned_to'] != $oldAssignedTo && $task->assignedUser) {
-            $task->assignedUser->notify(new TaskAssigned($task));
+        try {
+            if ($validated['assigned_to'] && $validated['assigned_to'] != $oldAssignedTo && $task->assignedUser) {
+                $task->assignedUser->notify(new TaskAssigned($task));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back()->with('success', 'Task updated.');

@@ -139,8 +139,12 @@ class PaymentController extends Controller
     {
         $invoice->update(['status' => 'sent']);
 
-        if ($invoice->user) {
-            $invoice->user->notify(new InvoiceSent($invoice));
+        try {
+            if ($invoice->user) {
+                $invoice->user->notify(new InvoiceSent($invoice));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back()->with('success', 'Invoice sent to client.');
@@ -242,8 +246,12 @@ class PaymentController extends Controller
             $invoice->update(['status' => 'paid', 'paid_date' => now()]);
         }
 
-        if ($payment->user) {
-            $payment->user->notify(new PaymentReceived($payment));
+        try {
+            if ($payment->user) {
+                $payment->user->notify(new PaymentReceived($payment));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back()->with('success', 'Payment approved.');

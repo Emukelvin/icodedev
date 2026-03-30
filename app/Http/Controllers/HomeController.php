@@ -127,7 +127,11 @@ class HomeController extends Controller
 
         $contact = \App\Models\ContactSubmission::create($validated);
 
-        Notification::route('mail', $validated['email'])->notify(new ContactFormReceived($contact));
+        try {
+            Notification::route('mail', $validated['email'])->notify(new ContactFormReceived($contact));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return back()->with('success', 'Thank you for contacting us! We\'ll get back to you within 24 hours.');
     }
@@ -157,7 +161,11 @@ class HomeController extends Controller
 
         $quote = \App\Models\QuoteRequest::create($validated);
 
-        Notification::route('mail', $validated['email'])->notify(new QuoteRequestReceived($quote));
+        try {
+            Notification::route('mail', $validated['email'])->notify(new QuoteRequestReceived($quote));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return back()->with('success', 'Your quote request has been submitted! We\'ll send you a detailed quote soon.');
     }
@@ -174,7 +182,11 @@ class HomeController extends Controller
 
         \App\Models\Newsletter::create(['email' => $request->email]);
 
-        Notification::route('mail', $request->email)->notify(new \App\Notifications\NewsletterSubscribed($request->email));
+        try {
+            Notification::route('mail', $request->email)->notify(new \App\Notifications\NewsletterSubscribed($request->email));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return back()->with('success', 'Thank you for subscribing to our newsletter!');
     }

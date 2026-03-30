@@ -63,10 +63,14 @@ class MessageController extends Controller
 
         // Notify other participants
         $message->load('user');
-        foreach ($conversation->participants as $participant) {
-            if ($participant->id !== auth()->id()) {
-                $participant->notify(new NewMessage($message));
+        try {
+            foreach ($conversation->participants as $participant) {
+                if ($participant->id !== auth()->id()) {
+                    $participant->notify(new NewMessage($message));
+                }
             }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back();

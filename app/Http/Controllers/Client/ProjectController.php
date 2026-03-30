@@ -50,7 +50,11 @@ class ProjectController extends Controller
 
         ActivityLog::log('project_created', 'New project request submitted', $project);
 
-        auth()->user()->notify(new ProjectCreated($project));
+        try {
+            auth()->user()->notify(new ProjectCreated($project));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return redirect()->route('client.projects.show', $project)
             ->with('success', 'Project request submitted successfully!');

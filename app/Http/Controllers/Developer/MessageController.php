@@ -64,10 +64,14 @@ class MessageController extends Controller
 
         // Notify other participants
         $message->load('user');
-        foreach ($conversation->participants as $participant) {
-            if ($participant->id !== auth()->id()) {
-                $participant->notify(new NewMessage($message));
+        try {
+            foreach ($conversation->participants as $participant) {
+                if ($participant->id !== auth()->id()) {
+                    $participant->notify(new NewMessage($message));
+                }
             }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back();
@@ -106,7 +110,11 @@ class MessageController extends Controller
 
         $recipient = User::find($request->recipient_id);
         $message->load('user');
-        $recipient->notify(new NewMessage($message));
+        try {
+            $recipient->notify(new NewMessage($message));
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         return redirect()->route('developer.messages.show', $conversation)
             ->with('success', 'Conversation started.');

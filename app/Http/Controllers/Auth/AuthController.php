@@ -86,7 +86,11 @@ class AuthController extends Controller
 
         ActivityLog::log('register', 'New user registered', $user);
 
-        $user->notify(new WelcomeUser);
+        try {
+            $user->notify(new WelcomeUser);
+        } catch (\Throwable $e) {
+            report($e);
+        }
 
         Auth::login($user);
 

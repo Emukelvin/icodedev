@@ -66,8 +66,12 @@ class TaskController extends Controller
 
         ActivityLog::log('task_status_updated', "Task '{$task->title}' status changed to {$request->status}", $task);
 
-        if ($task->project && $task->project->client) {
-            $task->project->client->notify(new TaskUpdated($task, 'status', $request->status));
+        try {
+            if ($task->project && $task->project->client) {
+                $task->project->client->notify(new TaskUpdated($task, 'status', $request->status));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back()->with('success', 'Task status updated.');
@@ -87,8 +91,12 @@ class TaskController extends Controller
             'body' => $request->body,
         ]);
 
-        if ($task->project && $task->project->client) {
-            $task->project->client->notify(new TaskUpdated($task, 'comment', $request->body));
+        try {
+            if ($task->project && $task->project->client) {
+                $task->project->client->notify(new TaskUpdated($task, 'comment', $request->body));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back()->with('success', 'Comment added.');
@@ -114,8 +122,12 @@ class TaskController extends Controller
             'file_size' => $file->getSize(),
         ]);
 
-        if ($task->project && $task->project->client) {
-            $task->project->client->notify(new TaskUpdated($task, 'file', $file->getClientOriginalName()));
+        try {
+            if ($task->project && $task->project->client) {
+                $task->project->client->notify(new TaskUpdated($task, 'file', $file->getClientOriginalName()));
+            }
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return back()->with('success', 'File uploaded.');

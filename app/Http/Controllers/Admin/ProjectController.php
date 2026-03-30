@@ -136,12 +136,20 @@ class ProjectController extends Controller
             $newDeveloperIds = $request->developers ?? [];
             if ($oldDeveloperIds != $newDeveloperIds && $project->client && !empty($newDeveloperIds)) {
                 $developerNames = User::whereIn('id', $newDeveloperIds)->pluck('name')->toArray();
-                $project->client->notify(new DeveloperAssigned($project, $developerNames));
+                try {
+                    $project->client->notify(new DeveloperAssigned($project, $developerNames));
+                } catch (\Throwable $e) {
+                    report($e);
+                }
             }
         }
 
         if ($oldStatus !== $project->status && $project->client) {
-            $project->client->notify(new ProjectStatusChanged($project, $oldStatus, $project->status));
+            try {
+                $project->client->notify(new ProjectStatusChanged($project, $oldStatus, $project->status));
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         ActivityLog::log('project_updated', "Project '{$project->title}' updated", $project);
