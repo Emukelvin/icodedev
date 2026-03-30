@@ -2,7 +2,17 @@
     $s = \App\Models\Setting::getAllCached();
     $siteName = $s['site_name'] ?? 'ICodeDev';
     $tagline = $s['site_tagline'] ?? 'Technology Solutions';
-    $emailLogo = !empty($s['email_logo']) ? asset($s['email_logo']) : (!empty($s['logo_url']) ? asset($s['logo_url']) : '');
+    $logoPath = !empty($s['email_logo']) ? $s['email_logo'] : (!empty($s['logo_url']) ? $s['logo_url'] : '');
+    $emailLogo = '';
+    if ($logoPath) {
+        $fullPath = public_path(ltrim($logoPath, '/'));
+        if (file_exists($fullPath)) {
+            $mime = mime_content_type($fullPath);
+            $emailLogo = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($fullPath));
+        } else {
+            $emailLogo = asset($logoPath);
+        }
+    }
     $primaryColor = '#6366f1';
     $primaryDark = '#4f46e5';
     $accentGlow = '#818cf8';

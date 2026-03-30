@@ -436,15 +436,29 @@ class CmsController extends Controller
             'body' => 'required|string',
         ]);
 
+        $s = Setting::getAllCached();
+        $siteName = $s['site_name'] ?? 'ICodeDev';
         $subscribers = Newsletter::all();
         $count = 0;
 
         foreach ($subscribers as $subscriber) {
-            \Mail::raw($request->body, function ($msg) use ($subscriber, $request) {
-                $msg->to($subscriber->email)
-                    ->subject($request->subject);
-            });
-            $count++;
+            try {
+                \Mail::send('emails.newsletter-broadcast', [
+                    'body' => $request->body,
+                    'icon' => '📰',
+                    'title' => $request->subject,
+                    'subtitle' => 'Newsletter from ' . $siteName,
+                    'greeting' => 'Hello,',
+                    'actionUrl' => config('app.url') . '/blog',
+                    'actionText' => 'Visit Our Blog',
+                ], function ($msg) use ($subscriber, $request) {
+                    $msg->to($subscriber->email)
+                        ->subject($request->subject);
+                });
+                $count++;
+            } catch (\Throwable $e) {
+                report($e);
+            }
         }
 
         return back()->with('success', "Newsletter sent to {$count} subscribers.");
