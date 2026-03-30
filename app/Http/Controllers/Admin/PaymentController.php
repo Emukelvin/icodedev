@@ -131,8 +131,18 @@ class PaymentController extends Controller
             ]);
         }
 
+        // Notify the client about the new invoice
+        try {
+            $client = \App\Models\User::find($validated['user_id']);
+            if ($client) {
+                $client->notify(new InvoiceSent($invoice));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         return redirect()->route('admin.invoices.index')
-            ->with('success', 'Invoice created successfully.');
+            ->with('success', 'Invoice created and client notified.');
     }
 
     public function sendInvoice(Invoice $invoice)
