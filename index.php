@@ -17,7 +17,12 @@ require __DIR__.'/vendor/autoload.php';
 /** @var Application $app */
 $app = require_once __DIR__.'/bootstrap/app.php';
 
-// Set the public path to the 'public' directory so asset URLs resolve correctly
-$app->usePublicPath(__DIR__.'/public');
+// When accessed from root (cPanel), set public path to the 'public' directory
+// When accessed via public/index.php (local dev), use that directory as public path
+if (defined('LARAVEL_PUBLIC_PATH')) {
+    $app->usePublicPath(LARAVEL_PUBLIC_PATH);
+} else {
+    $app->usePublicPath(__DIR__.'/public');
+}
 
 $app->handleRequest(Request::capture());

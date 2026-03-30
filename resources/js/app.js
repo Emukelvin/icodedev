@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        for (let i = 0; i < 60; i++) particles.push(new Particle());
+        for (let i = 0; i < 30; i++) particles.push(new Particle());
 
         const drawLines = () => {
             for (let i = 0; i < particles.length; i++) {
@@ -103,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const dx = particles[i].x - particles[j].x;
                     const dy = particles[i].y - particles[j].y;
                     const dist = Math.sqrt(dx * dx + dy * dy);
-                    if (dist < 120) {
+                    if (dist < 100) {
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
@@ -217,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     el.style.opacity = '1';
                     el.style.transform = 'translateY(0) translateX(0) scale(1)';
-                    el.style.filter = 'blur(0)';
                 }, delay);
                 observer.unobserve(el);
             }
@@ -227,16 +226,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.animate-on-scroll').forEach((el, index) => {
         const type = el.dataset.animate || 'up';
         el.style.opacity = '0';
-        el.style.filter = 'blur(4px)';
-        el.style.transition = 'opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1), filter 0.8s cubic-bezier(0.16,1,0.3,1)';
+        el.style.transition = 'opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
 
-        if (type === 'up') el.style.transform = 'translateY(40px)';
-        else if (type === 'left') el.style.transform = 'translateX(-40px)';
-        else if (type === 'right') el.style.transform = 'translateX(40px)';
-        else if (type === 'scale') el.style.transform = 'scale(0.9)';
-        else el.style.transform = 'translateY(40px)';
+        if (type === 'up') el.style.transform = 'translateY(30px)';
+        else if (type === 'left') el.style.transform = 'translateX(-30px)';
+        else if (type === 'right') el.style.transform = 'translateX(30px)';
+        else if (type === 'scale') el.style.transform = 'scale(0.95)';
+        else el.style.transform = 'translateY(30px)';
 
-        if (!el.dataset.delay) el.dataset.delay = (index % 6) * 100;
+        if (!el.dataset.delay) el.dataset.delay = (index % 6) * 80;
         observer.observe(el);
     });
 

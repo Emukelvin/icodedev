@@ -43,6 +43,25 @@ Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 Route::get('/referral/{code}', [HomeController::class, 'referralLanding'])->name('referral.landing');
 
+// ─── SETUP (remove after deployment) ─────────────────────────────
+Route::get('/setup/storage-link', function () {
+    if (auth()->check() && auth()->user()->role === 'admin') {
+        \Illuminate\Support\Facades\Artisan::call('storage:link');
+        return 'Storage link created successfully!';
+    }
+    abort(403);
+})->middleware('auth')->name('setup.storage-link');
+
+Route::get('/setup/optimize', function () {
+    if (auth()->check() && auth()->user()->role === 'admin') {
+        \Illuminate\Support\Facades\Artisan::call('config:cache');
+        \Illuminate\Support\Facades\Artisan::call('route:cache');
+        \Illuminate\Support\Facades\Artisan::call('view:cache');
+        return 'Application optimized successfully!';
+    }
+    abort(403);
+})->middleware('auth')->name('setup.optimize');
+
 // ─── BLOG ────────────────────────────────────────────────────────
 Route::get('/blog', [BlogController::class, 'index'])->name('blog');
 Route::get('/blog/{post}', [BlogController::class, 'show'])->name('blog.show');
