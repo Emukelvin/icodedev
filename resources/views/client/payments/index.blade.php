@@ -18,7 +18,7 @@
             @forelse($payments as $payment)
             <tr class="border-t border-white/6 hover:bg-white/4">
                 <td class="table-cell font-mono text-sm">{{ $payment->reference }}</td>
-                <td class="table-cell">{{ $payment->project?->name ?? '-' }}</td>
+                <td class="table-cell">{{ $payment->project?->title ?? '-' }}</td>
                 <td class="table-cell font-semibold">{{ $cs }}{{ number_format($payment->amount, 2) }}</td>
                 <td class="table-cell"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold bg-white/6 text-white/50 ring-1 ring-white/8">{{ ucfirst($payment->gateway) }}</span></td>
                 <td class="table-cell"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold {{ $payment->status === 'successful' ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20' : ($payment->status === 'failed' ? 'bg-red-500/15 text-red-400 ring-1 ring-red-500/20' : 'bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/20') }}">{{ ucfirst($payment->status) }}</span></td>
