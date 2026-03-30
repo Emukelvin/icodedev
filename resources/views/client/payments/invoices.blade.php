@@ -18,7 +18,7 @@
             @forelse($invoices as $invoice)
             <tr class="border-t border-white/6 hover:bg-white/4">
                 <td class="table-cell font-semibold">{{ $invoice->invoice_number }}</td>
-                <td class="table-cell">{{ $invoice->project?->name ?? '-' }}</td>
+                <td class="table-cell">{{ $invoice->project?->title ?? '-' }}</td>
                 <td class="table-cell font-semibold">{{ $cs }}{{ number_format($invoice->total, 2) }}</td>
                 <td class="table-cell"><span class="px-2.5 py-1 rounded-lg text-xs font-semibold {{ $invoice->status === 'paid' ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/20' : ($invoice->status === 'overdue' ? 'bg-red-500/15 text-red-400 ring-1 ring-red-500/20' : ($invoice->status === 'pending' ? 'bg-purple-500/15 text-purple-400 ring-1 ring-purple-500/20' : 'bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/20')) }}">{{ ucfirst($invoice->status) }}</span></td>
                 <td class="table-cell text-sm">{{ $invoice->due_date?->format('M d, Y') ?? '-' }}</td>
