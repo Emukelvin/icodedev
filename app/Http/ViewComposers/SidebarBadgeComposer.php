@@ -5,7 +5,6 @@ namespace App\Http\ViewComposers;
 use App\Models\BadgeRead;
 use App\Models\BlogComment;
 use App\Models\ContactSubmission;
-use App\Models\Conversation;
 use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\QuoteRequest;

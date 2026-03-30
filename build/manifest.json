@@ -1,0 +1,29 @@
+{
+  "_alpine-DNc2K227.js": {
+    "file": "assets/alpine-DNc2K227.js",
+    "name": "alpine"
+  },
+  "_rolldown-runtime-WNZMJCWm.js": {
+    "file": "assets/rolldown-runtime-WNZMJCWm.js",
+    "name": "rolldown-runtime"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-DmtrQylF.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-lJqqHRDl.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-WNZMJCWm.js",
+      "_alpine-DNc2K227.js"
+    ]
+  }
+}
