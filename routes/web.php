@@ -83,6 +83,37 @@ Route::middleware(['guest', 'throttle:5,1'])->group(function () {
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 Route::get('/2fa/challenge', [AuthController::class, 'show2FAChallenge'])->middleware('auth')->name('2fa.challenge');
 
+// ─── EMAIL VERIFICATION ─────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/email/verify', function () {
+        return view('auth.verify-email');
+    })->name('verification.notice');
+
+    Route::get('/email/verify/{id}/{hash}', function (\Illuminate\Http\Request $request) {
+        $user = \App\Models\User::findOrFail($request->route('id'));
+
+        if (!hash_equals(sha1($user->getEmailForVerification()), $request->route('hash'))) {
+            abort(403, 'Invalid verification link.');
+        }
+
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            \App\Models\ActivityLog::log('email_verified', 'Email address verified', $user);
+        }
+
+        return redirect()->intended(match ($user->role) {
+            'admin', 'manager' => route('admin.dashboard'),
+            'developer' => route('developer.dashboard'),
+            default => route('client.dashboard'),
+        })->with('success', 'Your email has been verified!');
+    })->middleware('signed')->name('verification.verify');
+
+    Route::post('/email/verification-notification', function (\Illuminate\Http\Request $request) {
+        $request->user()->sendEmailVerificationNotification();
+        return back()->with('success', 'Verification link has been sent to your email!');
+    })->middleware('throttle:3,1')->name('verification.send');
+});
+
 // ─── AUTHENTICATED USER ROUTES ──────────────────────────────────
 Route::middleware('auth')->group(function () {
     Route::post('/notifications/read-all', function () {
@@ -116,7 +147,7 @@ Route::post('/webhooks/paystack', [ClientPaymentController::class, 'paystackWebh
 Route::post('/webhooks/flutterwave', [ClientPaymentController::class, 'flutterwaveWebhook'])->name('webhooks.flutterwave')->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class]);
 
 // ─── CLIENT DASHBOARD ───────────────────────────────────────────
-Route::middleware(['auth', '2fa', 'role:client'])->prefix('client')->name('client.')->group(function () {
+Route::middleware(['auth', '2fa', 'verified', 'role:client'])->prefix('client')->name('client.')->group(function () {
     Route::get('/dashboard', [ClientDashboard::class, 'index'])->name('dashboard');
 
     // Projects
@@ -157,7 +188,7 @@ Route::middleware(['auth', '2fa', 'role:client'])->prefix('client')->name('clien
 });
 
 // ─── DEVELOPER DASHBOARD ────────────────────────────────────────
-Route::middleware(['auth', '2fa', 'role:developer'])->prefix('developer')->name('developer.')->group(function () {
+Route::middleware(['auth', '2fa', 'verified', 'role:developer'])->prefix('developer')->name('developer.')->group(function () {
     Route::get('/dashboard', [DevDashboard::class, 'index'])->name('dashboard');
 
     // Tasks
@@ -182,7 +213,7 @@ Route::middleware(['auth', '2fa', 'role:developer'])->prefix('developer')->name(
 });
 
 // ─── ADMIN PANEL ────────────────────────────────────────────────
-Route::middleware(['auth', '2fa', 'role:admin,manager'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', '2fa', 'verified', 'role:admin,manager'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
 
     // Projects
@@ -303,7 +334,7 @@ Route::middleware(['auth', '2fa', 'role:admin,manager'])->prefix('admin')->name(
 });
 
 // ─── ADMIN ONLY ─────────────────────────────────────────────────
-Route::middleware(['auth', '2fa', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', '2fa', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Site Settings (admin only)
     Route::get('/settings', [CmsController::class, 'settings'])->name('cms.settings');
     Route::put('/settings', [CmsController::class, 'updateSettings'])->name('cms.settings.update');

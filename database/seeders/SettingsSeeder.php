@@ -47,6 +47,7 @@ class SettingsSeeder extends Seeder
             ['key' => 'enable_faq', 'value' => '1', 'group' => 'features'],
             ['key' => 'enable_estimator', 'value' => '1', 'group' => 'features'],
             ['key' => 'enable_registration', 'value' => '1', 'group' => 'features'],
+            ['key' => 'enable_email_verification', 'value' => '0', 'group' => 'features'],
             ['key' => 'hero_title', 'value' => '', 'group' => 'content'],
             ['key' => 'hero_subtitle', 'value' => '', 'group' => 'content'],
             ['key' => 'cta_button_text', 'value' => 'Start Your Project', 'group' => 'content'],

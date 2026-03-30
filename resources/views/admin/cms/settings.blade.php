@@ -198,11 +198,12 @@
                     ['enable_faq', 'FAQ Page', 'Enable the FAQ page link in the footer'],
                     ['enable_estimator', 'Project Estimator', 'Enable the project estimator tool'],
                     ['enable_registration', 'User Registration', 'Allow new users to register on the site'],
+                    ['enable_email_verification', 'Email Verification', 'Require all users to verify their email address before accessing the dashboard', '0'],
                 ] as $toggle)
                 <label class="flex items-start gap-4 p-4 rounded-xl bg-white/3 border border-white/5 hover:border-white/10 transition-all cursor-pointer group">
                     <div class="relative mt-0.5">
                         <input type="hidden" name="settings[{{ $toggle[0] }}]" value="0">
-                        <input type="checkbox" name="settings[{{ $toggle[0] }}]" value="1" {{ ($settings[$toggle[0]] ?? '1') === '1' ? 'checked' : '' }} class="sr-only peer">
+                        <input type="checkbox" name="settings[{{ $toggle[0] }}]" value="1" {{ ($settings[$toggle[0]] ?? ($toggle[3] ?? '1')) === '1' ? 'checked' : '' }} class="sr-only peer">
                         <div class="w-11 h-6 bg-white/10 rounded-full peer-checked:bg-primary-600 transition-colors duration-300"></div>
                         <div class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow peer-checked:translate-x-5 transition-transform duration-300"></div>
                     </div>

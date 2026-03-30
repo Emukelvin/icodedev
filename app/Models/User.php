@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Notifications\VerifyEmail;
 
 #[Fillable(['name', 'email', 'password', 'phone', 'avatar', 'company', 'bio', 'role', 'github_id', 'google_id', 'two_factor_enabled', 'two_factor_secret', 'two_factor_recovery_codes', 'timezone', 'language', 'is_active', 'last_login_at', 'last_login_ip'])]
 #[Hidden(['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'])]
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
@@ -109,5 +111,10 @@ class User extends Authenticatable
         return $this->avatar
             ? asset('storage/' . $this->avatar)
             : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=6366f1&color=fff';
+    }
+
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyEmail);
     }
 }

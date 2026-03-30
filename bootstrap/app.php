@@ -9,6 +9,8 @@ use App\Http\Middleware\Verify2FA;
 use App\Http\Middleware\CheckMaintenanceMode;
 use App\Http\Middleware\MarkBadgeRead;
 
+use App\Http\Middleware\EnsureEmailIsVerified;
+
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
@@ -19,6 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleware::class,
             '2fa' => Verify2FA::class,
+            'verified' => EnsureEmailIsVerified::class,
         ]);
         $middleware->append(TrackActivity::class);
         $middleware->append(MarkBadgeRead::class);

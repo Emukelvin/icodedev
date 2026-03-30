@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
+use App\Models\Setting;
 use App\Rules\Recaptcha;
 
 class AuthController extends Controller
@@ -93,6 +94,19 @@ class AuthController extends Controller
         }
 
         Auth::login($user);
+
+        // Send verification email if enabled
+        $settings = Setting::getAllCached();
+        if (($settings['enable_email_verification'] ?? '0') === '1') {
+            try {
+                $user->sendEmailVerificationNotification();
+            } catch (\Throwable $e) {
+                report($e);
+            }
+
+            return redirect()->route('verification.notice')
+                ->with('success', 'Welcome! Please verify your email address to continue.');
+        }
 
         return redirect()->route('client.dashboard')->with('success', 'Welcome to ICodeDev! Your account has been created.');
     }
