@@ -283,6 +283,14 @@ class PaymentController extends Controller
             $invoice->update(['status' => 'sent']);
         }
 
+        try {
+            if ($payment->user) {
+                $payment->user->notify(new \App\Notifications\PaymentRejected($payment));
+            }
+        } catch (\Throwable $e) {
+            report($e);
+        }
+
         return back()->with('success', 'Payment rejected.');
     }
 
