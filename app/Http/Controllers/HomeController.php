@@ -52,6 +52,19 @@ class HomeController extends Controller
         return view('pages.about', compact('teamMembers', 'stats'));
     }
 
+    public function teamMemberProfile(TeamMember $teamMember)
+    {
+        abort_unless($teamMember->is_active, 404);
+
+        $otherMembers = TeamMember::where('is_active', true)
+            ->where('id', '!=', $teamMember->id)
+            ->orderBy('sort_order')
+            ->take(4)
+            ->get();
+
+        return view('pages.team-show', compact('teamMember', 'otherMembers'));
+    }
+
     public function services()
     {
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();

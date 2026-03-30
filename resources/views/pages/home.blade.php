@@ -354,7 +354,7 @@
 
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 mb-16">
             @forelse($teamMembers as $member)
-            <div class="group card-hover text-center animate-on-scroll">
+            <a href="{{ route('team.show', $member) }}" class="group card-hover text-center animate-on-scroll block">
                 <div class="relative overflow-hidden aspect-4/5">
                     @if($member->avatar)
                     <img src="{{ asset('storage/' . $member->avatar) }}" alt="{{ $member->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
@@ -364,22 +364,16 @@
                     </div>
                     @endif
                     <div class="absolute inset-0 bg-linear-to-t from-surface-950 via-surface-950/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-6">
-                        <div class="flex gap-3">
-                            @if($member->social_links)
-                                @foreach(collect($member->social_links)->take(3) as $platform => $url)
-                                <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="w-9 h-9 rounded-xl bg-white/10 flex items-center justify-center text-white hover:bg-primary-500 hover:scale-110 transition-all duration-300">
-                                    <i class="fab fa-{{ $platform }} text-sm"></i>
-                                </a>
-                                @endforeach
-                            @endif
-                        </div>
+                        <span class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
+                            View Profile <i class="fas fa-arrow-right text-xs"></i>
+                        </span>
                     </div>
                 </div>
                 <div class="p-5">
                     <h4 class="font-bold text-white group-hover:text-primary-400 transition-colors">{{ $member->name }}</h4>
                     <p class="text-primary-400/70 text-sm font-medium">{{ $member->position }}</p>
                 </div>
-            </div>
+            </a>
             @empty
             @foreach([
                 ['name' => 'Emmanuel A.', 'role' => 'CEO & Lead Developer', 'initial' => 'E'],

@@ -103,7 +103,7 @@
         </div>
         <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             @forelse($teamMembers as $member)
-            <div class="group card-hover overflow-hidden animate-on-scroll">
+            <a href="{{ route('team.show', $member) }}" class="group card-hover overflow-hidden animate-on-scroll block">
                 <div class="relative overflow-hidden aspect-4/5 bg-white/5">
                     @if($member->avatar)
                     <img src="{{ asset('storage/' . $member->avatar) }}" alt="{{ $member->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
@@ -112,26 +112,20 @@
                         <span class="text-5xl font-black text-white/20">{{ substr($member->name, 0, 1) }}</span>
                     </div>
                     @endif
-                    @if($member->social_links)
                     <div class="absolute inset-0 bg-linear-to-t from-surface-950/80 via-surface-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end justify-center pb-6">
-                        <div class="flex items-center gap-3">
-                            @foreach($member->social_links as $platform => $url)
-                            <a href="{{ $url }}" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center text-white hover:bg-white hover:text-surface-900 transition-all duration-300 border border-white/10 hover:scale-110">
-                                <i class="fab fa-{{ $platform }}"></i>
-                            </a>
-                            @endforeach
-                        </div>
+                        <span class="inline-flex items-center gap-2 text-sm font-semibold text-white bg-white/10 backdrop-blur-sm px-4 py-2 rounded-xl border border-white/10">
+                            View Profile <i class="fas fa-arrow-right text-xs"></i>
+                        </span>
                     </div>
-                    @endif
                 </div>
                 <div class="p-5 text-center">
-                    <h3 class="font-bold text-white">{{ $member->name }}</h3>
+                    <h3 class="font-bold text-white group-hover:text-primary-400 transition-colors">{{ $member->name }}</h3>
                     <p class="text-primary-400 text-sm font-medium mt-1">{{ $member->position }}</p>
                     @if($member->bio)
                     <p class="text-white/50 text-xs mt-2 leading-relaxed">{{ Str::limit($member->bio, 80) }}</p>
                     @endif
                 </div>
-            </div>
+            </a>
             @empty
             @foreach(['CEO & Founder', 'Lead Developer', 'UI/UX Designer', 'Project Manager'] as $role)
             <div class="group card-hover overflow-hidden animate-on-scroll">

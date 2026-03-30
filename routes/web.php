@@ -33,6 +33,7 @@ Route::get('/portfolio/{portfolio}', [HomeController::class, 'portfolioDetail'])
 Route::get('/pricing', [HomeController::class, 'pricing'])->name('pricing');
 Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
 Route::post('/contact', [HomeController::class, 'submitContact'])->name('contact.submit');
+Route::get('/team/{teamMember}', [HomeController::class, 'teamMemberProfile'])->name('team.show');
 Route::post('/quote', [HomeController::class, 'submitQuote'])->name('quote.submit');
 Route::post('/newsletter', [HomeController::class, 'submitNewsletter'])->name('newsletter.submit');
 Route::get('/project-estimator', [HomeController::class, 'estimator'])->name('project.estimator');

@@ -27,9 +27,9 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid sm:grid-cols-3 gap-4">
             @foreach([
-                ['icon' => 'envelope', 'bg' => 'from-primary-500/10 to-primary-500/5', 'color' => 'text-primary-600', 'label' => 'Email', 'value' => 'hello@icodedev.com', 'href' => 'mailto:hello@icodedev.com'],
-                ['icon' => 'phone', 'bg' => 'from-emerald-500/10 to-emerald-500/5', 'color' => 'text-emerald-600', 'label' => 'Phone', 'value' => '+234 XXX XXX XXXX', 'href' => 'tel:+2347038024207'],
-                ['icon' => 'map-marker-alt', 'bg' => 'from-amber-500/10 to-amber-500/5', 'label' => 'Location', 'color' => 'text-amber-600', 'value' => 'Lagos, Nigeria', 'href' => null],
+                ['icon' => 'envelope', 'bg' => 'from-primary-500/10 to-primary-500/5', 'color' => 'text-primary-600', 'label' => 'Email', 'value' => $siteSettings['contact_email'] ?? 'hello@icodedev.com', 'href' => 'mailto:' . ($siteSettings['contact_email'] ?? 'hello@icodedev.com')],
+                ['icon' => 'phone', 'bg' => 'from-emerald-500/10 to-emerald-500/5', 'color' => 'text-emerald-600', 'label' => 'Phone', 'value' => $siteSettings['contact_phone'] ?? '+234 XXX XXX XXXX', 'href' => 'tel:' . ($siteSettings['contact_phone'] ?? '')],
+                ['icon' => 'map-marker-alt', 'bg' => 'from-amber-500/10 to-amber-500/5', 'label' => 'Location', 'color' => 'text-amber-600', 'value' => $siteSettings['contact_address'] ?? 'Lagos, Nigeria', 'href' => null],
             ] as $info)
             <div class="card-hover p-6 flex items-center gap-4 animate-on-scroll group">
                 <div class="w-12 h-12 bg-linear-to-br {{ $info['bg'] }} {{ $info['color'] }} rounded-2xl flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform duration-500"><i class="fas fa-{{ $info['icon'] }} text-lg"></i></div>
@@ -50,7 +50,7 @@
             <div class="md:col-span-1 lg:col-span-2 space-y-6">
                 <div class="card-hover p-6 animate-on-scroll">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-5">Quick Connect</h3>
-                    <a href="https://wa.me/2347038024207" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 bg-linear-to-r from-emerald-500/10 to-emerald-500/5 text-emerald-400 rounded-2xl hover:from-emerald-500/15 hover:to-emerald-500/10 transition-all duration-300 group">
+                    <a href="https://wa.me/{{ ltrim($siteSettings['whatsapp_number'] ?? '2347038024207', '+') }}" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 p-4 bg-linear-to-r from-emerald-500/10 to-emerald-500/5 text-emerald-400 rounded-2xl hover:from-emerald-500/15 hover:to-emerald-500/10 transition-all duration-300 group">
                         <div class="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center group-hover:bg-emerald-500/30 group-hover:scale-110 transition-all duration-300"><i class="fab fa-whatsapp text-xl"></i></div>
                         <div><span class="font-semibold text-sm">Chat on WhatsApp</span><p class="text-xs text-emerald-400/70">Usually replies within minutes</p></div>
                     </a>
@@ -58,18 +58,23 @@
                 <div class="card-hover p-6 animate-on-scroll">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-5">Follow Us</h3>
                     <div class="flex gap-2">
-                        @foreach([['fab fa-twitter', '#'], ['fab fa-linkedin-in', '#'], ['fab fa-github', '#'], ['fab fa-instagram', '#']] as $social)
-                        <a href="{{ $social[1] }}" class="w-11 h-11 bg-white/5 rounded-xl flex items-center justify-center text-white/50 hover:bg-linear-to-br hover:from-primary-500 hover:to-primary-600 hover:text-white hover:shadow-lg hover:shadow-primary-500/25 hover:scale-110 transition-all duration-300"><i class="{{ $social[0] }}"></i></a>
+                        @php $contactSocials = [
+                            ['icon' => 'fab fa-x-twitter', 'url' => $siteSettings['social_twitter'] ?? ''],
+                            ['icon' => 'fab fa-linkedin-in', 'url' => $siteSettings['social_linkedin'] ?? ''],
+                            ['icon' => 'fab fa-github', 'url' => $siteSettings['social_github'] ?? ''],
+                            ['icon' => 'fab fa-instagram', 'url' => $siteSettings['social_instagram'] ?? ''],
+                            ['icon' => 'fab fa-facebook-f', 'url' => $siteSettings['social_facebook'] ?? ''],
+                        ]; @endphp
+                        @foreach($contactSocials as $social)
+                            @if(!empty($social['url']))
+                            <a href="{{ $social['url'] }}" target="_blank" rel="noopener noreferrer" class="w-11 h-11 bg-white/5 rounded-xl flex items-center justify-center text-white/50 hover:bg-linear-to-br hover:from-primary-500 hover:to-primary-600 hover:text-white hover:shadow-lg hover:shadow-primary-500/25 hover:scale-110 transition-all duration-300"><i class="{{ $social['icon'] }}"></i></a>
+                            @endif
                         @endforeach
                     </div>
                 </div>
                 <div class="card-hover p-6 animate-on-scroll">
                     <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Office Hours</h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between"><span class="text-white/50">Mon - Fri</span><span class="font-medium text-white">9:00 AM - 6:00 PM</span></div>
-                        <div class="flex justify-between"><span class="text-white/50">Saturday</span><span class="font-medium text-white">10:00 AM - 2:00 PM</span></div>
-                        <div class="flex justify-between"><span class="text-white/50">Sunday</span><span class="font-medium text-red-400">Closed</span></div>
-                    </div>
+                    <p class="text-sm font-medium text-white">{{ $siteSettings['business_hours'] ?? 'Mon-Fri: 9AM - 6PM' }}</p>
                 </div>
             </div>
 
@@ -109,8 +114,10 @@
     </div>
 </section>
 
+@if(!empty($siteSettings['map_embed_url']))
 <section class="h-64 sm:h-80 lg:h-100 bg-surface-900/30 relative">
     <div class="absolute top-0 left-0 right-0 h-12 bg-linear-to-b from-surface-950 to-transparent z-10"></div>
-    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253682.46310593903!2d3.28395955!3d6.548055099999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103b8b2ae68280c1%3A0xdc9e87a367c3d9cb!2sLagos!5e0!3m2!1sen!2sng!4v1700000000000" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="rounded-none"></iframe>
+    <iframe src="{{ $siteSettings['map_embed_url'] }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" class="rounded-none"></iframe>
 </section>
+@endif
 @endsection
