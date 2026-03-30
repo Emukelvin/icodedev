@@ -30,7 +30,7 @@ class BlogController extends Controller
         $posts = $query->latest('published_at')->paginate(9);
         $categories = BlogCategory::where('is_active', true)->withCount(['posts' => fn($q) => $q->published()])->get();
         $tags = BlogTag::withCount('posts')->orderByDesc('posts_count')->take(20)->get();
-        $featuredPosts = BlogPost::published()->latest('published_at')->take(5)->get();
+        $featuredPosts = BlogPost::with('author', 'category')->published()->latest('published_at')->take(5)->get();
 
         return view('pages.blog.index', compact('posts', 'categories', 'tags', 'featuredPosts'));
     }
@@ -44,7 +44,7 @@ class BlogController extends Controller
         $post->increment('views_count');
         $post->load(['author', 'category', 'tags', 'comments.user', 'comments.replies.user']);
 
-        $related = BlogPost::published()
+        $related = BlogPost::with('author', 'category')->published()
             ->where('id', '!=', $post->id)
             ->where('category_id', $post->category_id)
             ->latest('published_at')->take(3)->get();

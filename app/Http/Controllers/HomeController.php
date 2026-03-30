@@ -24,8 +24,8 @@ class HomeController extends Controller
         $portfolios = Portfolio::where('is_active', true)->where('is_featured', true)->orderBy('sort_order')->take(6)->get();
         $testimonials = Testimonial::where('is_active', true)->orderBy('sort_order')->get();
         $clientLogos = ClientLogo::where('is_active', true)->orderBy('sort_order')->get();
-        $packages = PricingPackage::where('is_active', true)->orderBy('sort_order')->take(3)->get();
-        $posts = BlogPost::published()->latest('published_at')->take(3)->get();
+        $packages = PricingPackage::with('service')->where('is_active', true)->orderBy('sort_order')->take(3)->get();
+        $posts = BlogPost::with('author', 'category')->published()->latest('published_at')->take(3)->get();
         $teamMembers = TeamMember::where('is_active', true)->orderBy('sort_order')->take(4)->get();
 
         $stats = [
@@ -83,7 +83,7 @@ class HomeController extends Controller
 
     public function pricing()
     {
-        $packages = PricingPackage::where('is_active', true)->orderBy('sort_order')->get();
+        $packages = PricingPackage::with('service')->where('is_active', true)->orderBy('sort_order')->get();
         $services = Service::where('is_active', true)->orderBy('sort_order')->get();
         return view('pages.pricing', compact('packages', 'services'));
     }

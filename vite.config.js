@@ -10,6 +10,18 @@ export default defineConfig({
         }),
         tailwindcss(),
     ],
+    build: {
+        cssMinify: 'lightningcss',
+        rollupOptions: {
+            output: {
+                manualChunks(id) {
+                    if (id.includes('alpinejs') || id.includes('@alpinejs')) {
+                        return 'alpine';
+                    }
+                },
+            },
+        },
+    },
     server: {
         watch: {
             ignored: ['**/storage/framework/views/**'],

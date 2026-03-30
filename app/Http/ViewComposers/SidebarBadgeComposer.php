@@ -49,7 +49,7 @@ class SidebarBadgeComposer
 
     private function adminBadges($user): array
     {
-        return Cache::remember('sidebar_badges_admin_' . $user->id, 30, function () use ($user) {
+        return Cache::remember('sidebar_badges_admin_' . $user->id, 60, function () use ($user) {
             $reads = $this->getUserReads($user->id, [
                 'tasks', 'contacts', 'quotes', 'payments', 'invoices', 'comments', 'testimonials'
             ]);
@@ -69,7 +69,7 @@ class SidebarBadgeComposer
 
     private function clientBadges($user): array
     {
-        return Cache::remember('sidebar_badges_client_' . $user->id, 30, function () use ($user) {
+        return Cache::remember('sidebar_badges_client_' . $user->id, 60, function () use ($user) {
             $reads = $this->getUserReads($user->id, ['payments', 'invoices']);
 
             return [
@@ -88,7 +88,7 @@ class SidebarBadgeComposer
 
     private function developerBadges($user): array
     {
-        return Cache::remember('sidebar_badges_developer_' . $user->id, 30, function () use ($user) {
+        return Cache::remember('sidebar_badges_developer_' . $user->id, 60, function () use ($user) {
             return [
                 'messages' => $this->unreadMessagesFor($user),
             ];
@@ -118,11 +118,28 @@ class SidebarBadgeComposer
 
     private function unreadMessagesFor($user): int
     {
-        return Conversation::whereHas('participants', function ($q) use ($user) {
-            $q->where('user_id', $user->id);
-        })->get()->sum(function ($conversation) use ($user) {
-            return $conversation->unreadCountFor($user);
-        });
+        $participantConversations = \DB::table('conversation_participants')
+            ->where('user_id', $user->id)
+            ->pluck('last_read_at', 'conversation_id');
+
+        if ($participantConversations->isEmpty()) {
+            return 0;
+        }
+
+        $total = 0;
+        foreach ($participantConversations as $conversationId => $lastRead) {
+            $query = \DB::table('messages')
+                ->where('conversation_id', $conversationId)
+                ->where('user_id', '!=', $user->id);
+
+            if ($lastRead) {
+                $query->where('created_at', '>', $lastRead);
+            }
+
+            $total += $query->count();
+        }
+
+        return $total;
     }
 
     public static function clearCache(int $userId, ?string $role = null): void

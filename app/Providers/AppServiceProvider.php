@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Setting;
 use App\Http\ViewComposers\SidebarBadgeComposer;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -22,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Prevent lazy loading in non-production to catch N+1 queries
+        Model::preventLazyLoading(!app()->isProduction());
+
         try {
             $siteSettings = Setting::getAllCached();
             View::share('siteSettings', $siteSettings);
